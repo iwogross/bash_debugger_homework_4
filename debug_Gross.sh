@@ -141,3 +141,18 @@ else
 _msg "Please specify a numeric line number"
 fi
 }
+
+# See if this line number has a breakpoint
+function _at_linenumbp
+{
+local i=0
+if [ "$_linebp" ]; then
+while (( $i < ${#_linebp[@]} )); do
+if (( ${_linebp[$i]} == $_curline )); then
+return 0
+fi
+let i=$i+1
+done
+fi
+return 1
+}
