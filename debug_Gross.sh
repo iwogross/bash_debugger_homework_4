@@ -54,3 +54,31 @@ let _steps=1
 trap '_steptrap $(( $LINENO -29 ))' DEBUG
 :
 
+# After each line of the test script is executed the shell traps to
+# this function.
+function _steptrap
+{
+_curline=$1 # the number of the line that just ran
+(( $_trace )) && _msg "$PS4 line $_curline: ${_lines[$_curline]}"
+if (( $_steps >= 0 )); then
+let _steps="$_steps - 1"
+fi
+# First check to see if a line number breakpoint was reached.
+# If it was, then enter the debugger.
+if _at_linenumbp ; then
+_msg "Reached breakpoint at line $_curline"
+_cmdloop
+# It wasn't, so check whether a break condition exists and is true.
+# If it is, then enter the debugger.
+elif [ -n "$_brcond" ] && eval $_brcond; then
+_msg "Break condition $_brcond true at line $_curline"
+_cmdloop
+# It wasn't, so check if we are in step mode and the number of steps
+# is up. If it is then enter the debugger.
+592
+elif (( $_steps == 0 )); then
+_msg "Stopped at line $_curline"
+_cmdloop
+fi
+}
+
