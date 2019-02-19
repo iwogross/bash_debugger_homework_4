@@ -156,3 +156,30 @@ done
 fi
 return 1
 }
+
+# Print out the shell script and mark the location of breakpoints
+# and the current line
+function _displayscript
+{
+local i=1 j=0 bp cl
+( while (( $i < ${#_lines[@]} )); do
+if [ ${_linebp[$j]} ] && (( ${_linebp[$j]} == $i )); then
+bp='*'
+let j=$j+1
+else
+bp=' '
+fi
+if (( $_curline == $i )); then
+cl=">"
+else
+cl=" "
+fi
+echo "$i:$bp $cl ${_lines[$i]}"
+let i=$i+1
+done
+) | more
+}
+
+
+
+
