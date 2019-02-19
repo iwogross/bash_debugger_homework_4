@@ -82,3 +82,29 @@ _cmdloop
 fi
 }
 
+# The Debugger Command Loop
+function _cmdloop {
+local cmd args
+while read -e -p "bashdb> " cmd args; do
+case $cmd in
+593
+\? | h ) _menu ;; # print command menu
+bc ) _setbc $args ;; # set a break condition
+bp ) _setbp $args ;; # set a breakpoint at the given
+# line
+cb ) _clearbp $args ;; # clear one or all breakpoints
+ds ) _displayscript ;; # list the script and show the
+# breakpoints
+g ) return ;; # "go": start/resume execution of
+# the script
+q ) exit ;; # quit
+s ) let _steps=${args:-1} # single step N times
+# (default = 1)
+return ;;
+x ) _xtrace ;; # toggle execution trace
+!* ) eval ${cmd#!} $args ;; # pass to the shell
+* ) _msg "Invalid command: '$cmd'" ;;
+esac
+done
+}
+
