@@ -29,3 +29,28 @@ _debugfile=$_tmpdir/bashdb.$$ #temporary firle for script that is
     #being debugged
 cat $_libdir/bashdb.pre $_guineapig > $_debugfile
 exec bash $_debugfile $_guineapig $_tmpdir $_libdir "$@"
+
+# bashdb preamble
+# This file gets prepended to the shell script being debugged.
+# Arguments:
+# $1 = the name of the original guinea pig script
+# $2 = the directory where temporary files are stored
+# $3 = the directory where bashdb.pre and bashdb.fns are stored
+_debugfile=$0
+_guineapig=$1
+_tmpdir=$2
+_libdir=$3
+shift 3
+source $_libdir/bashdb.fns
+_linebp=
+let _trace=0
+let _i=1
+while read; do
+_lines[$_i]=$REPLY
+let _i=$_i+1
+done < $_guineapig
+trap _cleanup EXIT
+let _steps=1
+trap '_steptrap $(( $LINENO -29 ))' DEBUG
+:
+
