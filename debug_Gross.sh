@@ -25,9 +25,9 @@ shift
 
 _tmpdir=/tmp
 _libdir=.
-_debugfile=$_tmpdir/bashdb.$$ #temporary firle for script that is
+_debugfile=$_tmpdir/debug_Gross.$$ #temporary file for script that is
     #being debugged
-cat $_libdir/bashdb.pre $_guineapig > $_debugfile
+cat $_libdir/debug_Gross.sh $_guineapig > $_debugfile
 exec bash $_debugfile $_guineapig $_tmpdir $_libdir "$@"
 
 # bashdb preamble
